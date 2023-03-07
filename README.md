@@ -169,6 +169,8 @@ kops validate cluster demok8scluster.k8s.local
    $ curl ip_address_of_pod
    $ kubectl describe pod nginx    # to see the details
    $ kubectl delete pod nginx     # to delete the pod
+   $ kubectl get deploy
+   $ kubectl delete deploy nginx
    ```
 
    > reference is goto browser and search for `kubectl cheatsheet`
@@ -182,4 +184,52 @@ Deployment will create a Replica set and this replica sets create a pod. And thi
 | Container      | Pod | Deployment     |
 | ---        |    ----   | --- |
 | to run container we give docker run command       | we write running specifications of docker container pod.yml file. It may single or multiple containers.       | If you deploy the Deployment then Healing and scaling can be done   |
-| Paragraph   | Text        | And more      |
+
+| Deployment             | Replica set     |
+|    ----         |   ---          |
+| Deployment will create a Replica set           | It is basically a kubernetes controller that is one that is implementing the auto healing feature of pod.      |
+
+1. lets implement it:
+
+   ```console
+   $ vi pod.yml
+   $ kubectl create -f pod.yml
+   $ kubectl get pods
+   $ kubectl get all
+   $ kubectl get all -A
+   $ kubectl get pods -o wide
+   
+   ```
+
+2. goto browser search for `kubernetes deployment` and see the example docs
+
+   ```console
+   $ vim deployment.yml
+   $ kubectl apply -f deployment.yml
+   $ kubectl get deploy
+   $ kubectl get pod
+   $ kubectl get rs     # rs means replica set
+   ```
+
+3. Now open another terminal and run this command
+
+   ```console
+   $ kubectl get pods -w  # you can watch live whats happening
+   $ kubectl delete pod pod_name  # run this command in previous terminal
+   ```
+
+   > before the pod gets deleted the replica set ensures another pod gets created
+
+## kubernetes service
+
+1. the service can do :
+   * Load Balancing
+   * Service Discovery(Labels and selectors)
+   * expose to world
+
+2. service types:
+   * `Cluster IP` - you can only access inside the cluster
+   * `Nodeport` - you can access inside the organization means who had the instance ip address 
+   * `Loadbalancer` - entire world
+
+> when the pod is created it as a ip address . if the pod is deleted then a new pod gets created but it has a different ip address. the problem is here is if someone is accessing the application in the pod with the ip , we have no idea when the pod deleted and changes and new ip comes so the application in the pod cannot be accessed . to resolve this issue we use service discovery that uses labels and selectors for the ipaddress.
