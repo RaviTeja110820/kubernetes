@@ -233,3 +233,60 @@ Deployment will create a Replica set and this replica sets create a pod. And thi
    * `Loadbalancer` - entire world
 
 > when the pod is created it as a ip address . if the pod is deleted then a new pod gets created but it has a different ip address. the problem is here is if someone is accessing the application in the pod with the ip , we have no idea when the pod deleted and changes and new ip comes so the application in the pod cannot be accessed . to resolve this issue we use service discovery that uses labels and selectors for the ipaddress.
+
+
+## kubeshark
+
+```console
+$ minikube status       # to check cluster is running
+$ kubectl get all
+$ kubectl delete deploy deployment_name
+$ kubectl delete svc demo-service
+$ kubectl get all       # now the default kubernetes service should be running 
+```
+
+1. lets build a image of an application
+
+   ```console
+   $ vim Dockerfile           # write your application 
+   $ docker build -t ravteja/app:V1      # image is build
+
+   ```
+
+2. lets do the deployment
+
+   ```console
+   $ vim deployment.yml       # goto `kubernetes deployment` and copy the code paste in this file and do necessary changes , labels are important
+   $ kubectl apply -f deployment.yml
+   $ kubectl get deploy       # gives the status 
+   $ kubectl get pods         # shows pods information
+   $ kubectl get pods -o wide  # to get ip address
+   ```
+
+3. lets create the service
+
+   ```console
+   $ vim service.yml         # goto `kubernetes service` and copy the code paste in this file and do necessary changes, use node-port for now. make sure that the label name in deployment.yml file matches with the selector in service.yml file.
+   $ kubectl apply -f service.yml
+   $ kubectl get svc         # now copy the ip of the instance and paste in the browser public-ip:port_number
+   $ kubectl edit svc svc_name
+   ```
+
+## Ingress
+
+1. goto browser search for `kubernetes ingress` and see the example docs
+
+2. lets write the ingress
+
+   ```console
+   $ ingress.yml      # replace the service name, and remember the host name
+   $ kubectl apply -f ingress.yml
+   $ kubectl get ingress      # you cant see nothing in the address because you havent created ingress controller
+   ```
+
+3. goto browser search for `kubernetes ingress install` , lets install nginx ingress fo now
+
+   ```console
+   $ minikube addons enable ingress
+   $ kubectl get ingress        # now you can find in the address
+   ```
